@@ -12,7 +12,7 @@ cards = pd.read_csv("./data/card_dev.csv", sep=";",dtype={"card_id":int,"disp_id
 clients = pd.read_csv("./data/client.csv", sep=";",dtype=int)
 dispositions = pd.read_csv("./data/disp.csv", sep=";",dtype={"disp_id":int,"client_id":int,"account_id":int,"type":str})
 districts = pd.read_csv("./data/district.csv", na_values=['?'], sep=";",dtype={"code":int, "name":str, "region":str,"no. of inhabitants":int,"no. of municipalities with inhabitants < 499":int,"no. of municipalities with inhabitants 500-1999":int,"no. of municipalities with inhabitants 2000-9999":int, "no. of municipalities with inhabitants >10000": int, "no. of cities":int, "ratio of urban inhabitants":float, "average salary":float, "unemploymant rate '95":float, "unemploymant rate '96":float, "no. of enterpreneurs per 1000 inhabitants": float, "no. of commited crimes '95":int, "no. of commited crimes '96":int})
-final_data_lowcorr = pd.read_csv("./data/final_data_lowcorr.csv", na_values=['?'], sep=',')
+final_data_lowcorr = pd.read_csv("./data/final_data_lowcorr.csv", na_values=['?'], sep=',', dtype={"age":int})
 
 #ACCOUNTS
 
@@ -189,6 +189,20 @@ def plot_loans():
         plt.savefig('plots/loan_amount_duration_scatter.pdf')
 
 
+        payments = loans["payments"]
+
+        fig, ax = plt.subplots(figsize =(16, 9))
+
+        sc = plt.scatter(payments, amounts, c=durations)
+        plt.ylabel("Payments (czech crowns)")
+        plt.ylabel("Amount (czech crowns)")
+        cb = fig.colorbar(sc, ax=ax, label='Duration (months)')
+
+        plt.title("Relation between loan amount and payments")
+
+        plt.savefig('plots/loan_amount_payments_duration_scatter.pdf')
+
+
 def plot_transactions():
 
         loans_accountid = loans["account_id"].unique()
@@ -231,7 +245,7 @@ def plot_transactions():
 
         
 
-        hb = plt.hexbin(x=amount, y=balance, C=frequency, gridsize=(30, 15), cmap="Reds", bins="log")
+        hb = plt.hexbin(x=amount, y=balance, C=frequency, gridsize=(30, 15), cmap="Blues", bins="log")
         cb = fig.colorbar(hb, ax=ax, label='Frequency')
 
         plt.title("Transaction amount related to balance")
@@ -240,18 +254,83 @@ def plot_transactions():
         plt.savefig('plots/all_transaction_amount_balance.pdf')
 
 
-
 def plot_districts():
-        pass
+        #nº habitants, urban ratio and average salary
+        salary = districts["average salary "]
+        habitants = districts["no. of inhabitants"]
+        urban_ratio = districts["ratio of urban inhabitants "]
+
+        fig, ax = plt.subplots(figsize =(16, 9))
+        sc = plt.scatter(habitants, salary, c=urban_ratio)
+        plt.xlabel("Nº habitants")
+        plt.ylabel("Average salary")
+        cb = fig.colorbar(sc, ax=ax, label='Urban ratio')
+        plt.title("Relation between salary, habitants and urban ratio")
+        plt.savefig('plots/salary_habitants_urbanratio_scatter.pdf')
+
+        fig, ax = plt.subplots(figsize =(16, 9))
+        sc = plt.scatter(habitants, salary, c=urban_ratio)
+        plt.xlabel("Nº habitants")
+        plt.ylabel("Average salary")
+        cb = fig.colorbar(sc, ax=ax, label='Urban ratio')
+        plt.title("Relation between salary, habitants and urban ratio")
+        plt.savefig('plots/salary_habitants_urbanratio_scatter.pdf')
 
 def plot_clients():
         pass
 
 def plot_final_dataset():
-        print(final_data_lowcorr.columns)
+        print(final_data_lowcorr["age"])
+        # importing diamond dataset from the library
+        fig, ax = plt.subplots(figsize =(16, 11))
+
+        
+        # plotting histogram for carat using distplot()
+        age_displot = sns.displot(final_data_lowcorr["age"], kde=True, bins=20, kde_kws=dict(cut=3))
+
+        plt.savefig('plots/age_of_loan_displot.pdf')
+
+
+        #avg salary and recent balance
+        figure, axis = plt.subplots(nrows=2, ncols=2, figsize=(16, 11))
+        axis[0][0].hist(final_data_lowcorr["average_salary"], bins=20, )
+        axis[0][0].set_title("Salary Frequency")
+        axis[0][1].boxplot(final_data_lowcorr["average_salary"], labels=[""])
+        axis[0][1].set_title("Salary Frequency Boxplot")
+        axis[1][0].hist(final_data_lowcorr["recent_balance"], bins=20, )
+        axis[1][0].set_title("Recent Balance Frequency")
+        axis[1][1].boxplot(final_data_lowcorr["recent_balance"], labels=[""])
+        axis[1][1].set_title("Recent Balance Boxplot")
+        plt.savefig('plots/salary_balance_distributions.pdf')
+
+        #salary and balance by sex
+
+        males = final_data_lowcorr[final_data_lowcorr["sex"] == 1]
+        females = final_data_lowcorr[final_data_lowcorr["sex"] == 0]
+
+        fig, ax = plt.subplots(figsize =(16, 9))
+
+        ax.scatter(males["average_salary"], males["recent_balance"], s=10, c="blue", marker="s", label="males")
+        ax.scatter(females["average_salary"], females["recent_balance"], s=10, c="red", marker="o", label="females")
+        
+        b_male, a_male = np.polyfit(males["average_salary"], males["recent_balance"], deg=1)
+        b_female, a_female = np.polyfit(females["average_salary"], females["recent_balance"], deg=1)
+        xseq = np.linspace(0, 10, num=100)
+
+        ax.plot(xseq, a_male + b_male * xseq, color="blue", lw=2.5)
+        ax.plot(xseq, a_female + b_female * xseq, color="red", lw=2.5)
+
+        
+        plt.xlabel("Average salary")
+        plt.ylabel("Recent balance")
+        plt.legend(loc="upper right")
+        plt.title("Salary and balance for men and women")
+        plt.savefig('plots/salary_balance_sex_scatter.pdf')
+
+
 
 def main():
-        plot_final_dataset()
+        plot_transactions()
 
 if __name__ == "__main__":
     main()
