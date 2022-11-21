@@ -165,7 +165,7 @@ def plot_loans():
         
         
         # Creating plot
-        bp = ax.boxplot(x=data, labels=["Nonpayed", "Payed"])
+        bp = ax.boxplot(x=data, labels=["-1", "1"])
 
         plt.ylabel("Amount (czech crowns)")
 
@@ -259,22 +259,49 @@ def plot_districts():
         salary = districts["average salary "]
         habitants = districts["no. of inhabitants"]
         urban_ratio = districts["ratio of urban inhabitants "]
+        num_enterporneurs = districts["no. of enterpreneurs per 1000 inhabitants "]
+        unemployment_95 = districts["unemploymant rate '95 "]
+        unemployment_96 = districts["unemploymant rate '96 "]
+        num_crimes_95 = districts["no. of commited crimes '95 "]
+        num_crimes_96 = districts["no. of commited crimes '96 "]
+        avg_unemployment = (unemployment_95 + unemployment_96) / 2
+        avg_num_crimes = (num_crimes_95 + num_crimes_96) / 2
+        
 
         fig, ax = plt.subplots(figsize =(16, 9))
-        sc = plt.scatter(habitants, salary, c=urban_ratio)
+        sc = plt.scatter(habitants, urban_ratio, c=salary)
         plt.xlabel("Nº habitants")
-        plt.ylabel("Average salary")
-        cb = fig.colorbar(sc, ax=ax, label='Urban ratio')
+        plt.ylabel("Ratio of Urban Inhabitants")
+        cb = fig.colorbar(sc, ax=ax, label='Average Salary')
         plt.title("Relation between salary, habitants and urban ratio")
         plt.savefig('plots/salary_habitants_urbanratio_scatter.pdf')
 
         fig, ax = plt.subplots(figsize =(16, 9))
-        sc = plt.scatter(habitants, salary, c=urban_ratio)
+        sc = plt.scatter(habitants, num_enterporneurs, c=salary)
         plt.xlabel("Nº habitants")
-        plt.ylabel("Average salary")
-        cb = fig.colorbar(sc, ax=ax, label='Urban ratio')
-        plt.title("Relation between salary, habitants and urban ratio")
-        plt.savefig('plots/salary_habitants_urbanratio_scatter.pdf')
+        plt.ylabel("Nº enterpreneurs per 1000 habitants")
+        cb = fig.colorbar(sc, ax=ax, label='Average salary')
+        plt.title("Relation between salary, habitants and number of enterpreneurs")
+        plt.savefig('plots/salary_habitants_enterpreneurs_scatter.pdf')
+
+        fig, ax = plt.subplots(figsize =(16, 9))
+        sc = plt.scatter(habitants, avg_unemployment, c=salary)
+        plt.xlabel("Nº habitants")
+        plt.ylabel("Averega Unemployment Rate in '95 and '96")
+        cb = fig.colorbar(sc, ax=ax, label='Average salary')
+        plt.title("Relation between salary, habitants and Averega Unemployment Rate")
+        plt.savefig('plots/salary_habitants_unemployment_scatter.pdf')
+
+        fig, ax = plt.subplots(figsize =(16, 9))
+        sc = plt.scatter(habitants, avg_num_crimes, c=salary)
+        plt.xlabel("Nº habitants")
+        plt.ylabel("Averega number of crimes in '95 and '96")
+        cb = fig.colorbar(sc, ax=ax, label='Average salary')
+        plt.title("Relation between salary, habitants and Average number of crimes")
+        plt.savefig('plots/salary_habitants_crime_scatter.pdf')
+
+
+
 
 def plot_clients():
         pass
@@ -330,7 +357,7 @@ def plot_final_dataset():
 
 
 def main():
-        plot_transactions()
+        plot_districts()
 
 if __name__ == "__main__":
     main()
