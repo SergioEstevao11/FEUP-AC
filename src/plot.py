@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import statsmodels.api as sm
+import scipy.stats as stats
 
 
 loans = pd.read_csv("./data/loan_dev.csv", sep=";",dtype=int)
@@ -88,7 +90,6 @@ def card_plot():
 
 
 def plot_loans():
-        plt.rcParams.update({'font.size': 16})
 
         num_nonpayed_loans = len(loans[loans["status"] == -1]["loan_id"].unique())
         num_payed_loans = len(loans[loans["status"] == 1]["loan_id"].unique())
@@ -186,6 +187,22 @@ def plot_loans():
         plt.title("Relation between loan amount, payments and duration")
 
         plt.savefig('plots/loan_amount_payments_duration_scatter.png', transparent=True)
+
+        fig, ax = plt.subplots(figsize =(16, 9))
+
+        # pplot(iris, x="sepal_length", y=gamma, hue="species", kind='qq', height=4, aspect=2)
+
+
+        fig, ax = plt.subplots(figsize =(16, 9))
+        fig = sm.qqplot(nonpayed_loan_amount, stats.t, fit=True, line="s")
+        plt.title("Unpayed loan amount distribution")
+        plt.savefig('plots/loan_amount_nonpayed_qqplot.png', transparent=True)
+
+        fig, ax = plt.subplots(figsize =(16, 9))
+        fig = sm.qqplot(payed_loan_amount, stats.t, fit=True, line="s")
+        plt.title("Payed loan amount distribution")
+        plt.savefig('plots/loan_amount_payed_qqplot.png', transparent=True)
+
 
 
 def plot_transactions():
@@ -298,7 +315,7 @@ def plot_final_dataset():
         # importing diamond dataset from the library
         fig, ax = plt.subplots(figsize =(15, 10))
         # plotting histogram for carat using distplot()
-        age_displot = sns.displot(final_dataset["age"], kde=True, bins=20, kde_kws=dict(cut=3))
+        age_displot = sns.displot(final_dataset["age_when_loan"], kde=True, bins=20, kde_kws=dict(cut=3))
 
 
         plt.savefig('plots/age_of_loan_displot.png', transparent=True)
@@ -344,12 +361,8 @@ def plot_final_dataset():
 
 def main():
         plt.rcParams.update({'font.size': 12})
-        accounts_plot()
-        card_plot()
-        plot_loans()
-        plot_transactions()
-        plot_districts()
-        plot_final_dataset()
+        num_minors = final_dataset[final_dataset["age_when_loan"] < 18]
+        print(num_minors)
        
 
 
