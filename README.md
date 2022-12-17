@@ -1,6 +1,6 @@
 # Bank Loan Prediction: Machine Learning
 
-**Description** - Machine Learning and Data Science problem based on a dataset from information describing a Czech bank's activity during the 90s, where the main objetive is to create a model to predict if a loan will be paid or not.
+**Description** - Machine Learning and Data Science problem based on a dataset from information describing a Czech bank's activity during the 90s, where the main objective is to create a model to predict if a loan will be paid or not.
 
 **Course** - Machine Learning
 
