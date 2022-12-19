@@ -27,8 +27,9 @@ To execute this project, these libraries are needed:
 
 The project source code is in the jupyter notebook file **_bank_mining.ipynb_**, where the code used for the project is present and documented.
 
-## Group Members (Group 24_1D )
+## Group Members (Group 20)
 
-- Sofia Germer, up201907461
-- Pedro Jesus, up201907523
+- Duarte Sardão, up201905497
+- Gabriel Martins, up201906072
+- Miguel Lopes, up201704590
 - Sérgio Estêvão, up201905680
